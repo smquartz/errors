@@ -249,10 +249,10 @@ func TestWrapPrefixError(t *testing.T) {
 	}
 }
 
-func TestWrapPrefixfError(t *testing.T) {
+func TestWrapfError(t *testing.T) {
 	// *Error type returned as error, used in this test
 	e := func() error {
-		return WrapPrefixf(testMsgFoo, testFormatPrefixFoobar, 1, testFormatArgumentBaz)
+		return Wrapf(testMsgFoo, testFormatPrefixFoobar, 1, testFormatArgumentBaz)
 	}()
 
 	// test using a string constructor
@@ -267,7 +267,7 @@ func TestWrapPrefixfError(t *testing.T) {
 	}
 
 	// test using a plain error constructor
-	err := WrapPrefixf(fmt.Errorf(testMsgFoo), testFormatPrefixFoobar, 0, testFormatArgumentBaz)
+	err := Wrapf(fmt.Errorf(testMsgFoo), testFormatPrefixFoobar, 0, testFormatArgumentBaz)
 	// test that the error message is as it was set
 	if err.Error() != fmt.Sprintf("%s: %s", fmt.Sprintf(testFormatPrefixFoobar, testFormatArgumentBaz), testMsgFoo) {
 		t.Errorf(constructorPlainErrorFailed, errWrongErrorMessage)
@@ -278,7 +278,7 @@ func TestWrapPrefixfError(t *testing.T) {
 	}
 
 	// test using a nil constructor
-	err = WrapPrefixf(nil, testFormatPrefixFoobar, 0, testFormatArgumentBaz)
+	err = Wrapf(nil, testFormatPrefixFoobar, 0, testFormatArgumentBaz)
 	// test that the error message is correct
 	if err.Error() != fmt.Sprintf("%s: %s", fmt.Sprintf(testFormatPrefixFoobar, testFormatArgumentBaz), fmt.Errorf("%v", nil).Error()) {
 		t.Errorf(constructorNilFailed, errWrongErrorMessage)
@@ -289,7 +289,7 @@ func TestWrapPrefixfError(t *testing.T) {
 	}
 
 	// test using a *Error constructor
-	err = WrapPrefixf(e, testFormatPrefixFoobar, 0, testFormatArgumentBaz)
+	err = Wrapf(e, testFormatPrefixFoobar, 0, testFormatArgumentBaz)
 	// test that the underlying error is as it was set
 	if !reflect.DeepEqual(err.Err, e) {
 		t.Errorf(constructorErrorFailed, errWrongUnderlyingError)
@@ -299,9 +299,9 @@ func TestWrapPrefixfError(t *testing.T) {
 		t.Errorf(constructorErrorFailed, errWrongErrorMessage)
 	}
 
-	// create a slice to compare WrapPrefixf()'s stack, with callers()'s stack
-	bs := [][]uintptr{WrapPrefixf(testMsgFoo, testFormatPrefixFoobar, 0).stack, callers()}
-	// actually compare WrapPrefixf()'s stack with caller()'s stack
+	// create a slice to compare Wrapf()'s stack, with callers()'s stack
+	bs := [][]uintptr{Wrapf(testMsgFoo, testFormatPrefixFoobar, 0).stack, callers()}
+	// actually compare Wrapf()'s stack with caller()'s stack
 	if err := compareStacks(bs[0], bs[1]); err != nil {
 		t.Errorf(constructorStringFailed, errStacksNotMatch)
 		t.Errorf(err.Error())
