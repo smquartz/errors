@@ -127,7 +127,7 @@ func (err *Error) RootCause() (root error) {
 		if !ok {
 			break
 		}
-		root = e.Err
+		root = e.Cause()
 	}
 	return root
 }
