@@ -5,8 +5,8 @@ go:
 install:
 - go get golang.org/x/tools/cmd/cover
 - go get github.com/mattn/goveralls
-- github.com/bugsnag/bugsnag-go
-- github.com/pkg/errors
+- go get github.com/bugsnag/bugsnag-go
+- go get github.com/pkg/errors
 script:
 - go test -v -covermode=count -coverprofile=coverage.out
 - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
