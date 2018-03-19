@@ -21,13 +21,8 @@ const (
 
 // error format strings used in this file
 const (
-	assertFailed            = "Assert() failed; %v"
-	assertUnderlyingFailed  = "AssertUnderlying() failed; %v"
-	getRootUnderlyingFailed = "GetRootUnderlying() failed; %v"
-	gRUFNilFailed           = "GetRootUnderlying() failed with nil error as argument; %v"
-	gRUFPlainFailed         = "GetRootUnderlying() failed with plain error as argument; %v"
-	gRUFErrorFailed         = "GetRootUnderlying() failed with *Error with nested plain error as argument; %v"
-	gRUFNestedErrorFailed   = "GetRootUnderlying() failed with *Error with nested *Error(s) as argument; %v"
+	assertFailed           = "Assert() failed; %v"
+	assertUnderlyingFailed = "AssertUnderlying() failed; %v"
 )
 
 func TestAssert(t *testing.T) {
@@ -106,41 +101,4 @@ func TestAssertUnderlying(t *testing.T) {
 		t.Errorf(assertUnderlyingFailed, errWrongUnderlyingError)
 	}
 
-}
-
-func TestGetRootUnderlying(t *testing.T) {
-	var err error
-	// test case: nil error
-	err = nil
-	if root := GetRootUnderlying(err); root != err {
-		t.Errorf(gRUFNilFailed, errWrongUnderlyingError)
-	}
-
-	// test case: plain error
-	err = fmt.Errorf(testMsgFoo)
-	if root := GetRootUnderlying(err); root != err {
-		t.Errorf(gRUFPlainFailed, errWrongUnderlyingError)
-	}
-
-	// test case: *Error with underlying plain error
-	underlying := fmt.Errorf(testMsgFoo)
-	err = func() error { return New(underlying) }()
-	if root := GetRootUnderlying(err); root != underlying {
-		t.Errorf(gRUFErrorFailed, errWrongUnderlyingError)
-	}
-
-	// test case: *Error with underlying *Error with underlying plain error
-	underlying2 := New(underlying)
-	err = New(underlying2)
-	if root := GetRootUnderlying(err); root != underlying {
-		t.Errorf(gRUFNestedErrorFailed, errWrongUnderlyingError)
-	}
-
-	// test case: *Error with underlying *Error with underlying *Error with
-	// underlying plain error
-	underlying3 := New(underlying2)
-	err = New(underlying3)
-	if root := GetRootUnderlying(err); root != underlying {
-		t.Errorf(gRUFNestedErrorFailed, errWrongUnderlyingError)
-	}
 }

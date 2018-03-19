@@ -39,19 +39,3 @@ func ExampleAssertUnderlying() {
 	// print the callers
 	fmt.Println(e.Callers())
 }
-
-func ExampleGetRootUnderlying() {
-	// mock function that returns a heavily nested error, with a root error
-	// that is a plain error
-	err := func() error {
-		return WrapPrefix(WrapPrefix(WrapPrefix(WrapPrefix(fmt.Errorf("some error"), "1", 1), "2", 1), "3", 1), "4", 1)
-	}()
-
-	// let's print the error
-	fmt.Printf("The error is %v\n", err)
-	// oh no it has all these prefixes we don't want
-	// let's get the root underlying error
-	err = GetRootUnderlying(err)
-	// let's print the root underlying error
-	fmt.Printf("The root error is %v\n", err)
-}

@@ -97,3 +97,17 @@ func (err *Error) TypeName() string {
 	}
 	return reflect.TypeOf(err.Err).String()
 }
+
+// Cause returns the underlying cause of an error, if possible.  It returns the
+// first error in the stack of nested errors, that is not of type *Error
+func (err *Error) Cause() (root error) {
+	root = err
+	for {
+		e, ok := Assert(root)
+		if !ok {
+			break
+		}
+		root = e.Err
+	}
+	return root
+}

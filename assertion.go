@@ -29,18 +29,3 @@ func AssertUnderlying(err error) (*Error, error) {
 	}
 	return u, nil
 }
-
-// GetRootUnderlying is a convenience function that will return the shallowest
-// nested error that is not of type *Error.  The aim of this is to return the
-// root cause error.
-func GetRootUnderlying(err error) (root error) {
-	root = err
-	for {
-		e, ok := Assert(root)
-		if !ok {
-			break
-		}
-		root = e.Err
-	}
-	return root
-}
