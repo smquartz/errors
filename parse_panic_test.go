@@ -93,6 +93,50 @@ github.com/loopj/bugsnag-example-apps/go/revelapp/app/controllers.func·001()
 net/http.(*Server).Serve(0xc20806c780, 0x910c88, 0xc20803e168, 0x0, 0x0)
 	/0/c/go/src/pkg/net/http/server.go:1698 +0x91
 `
+var notPanic = `blah blah blah: good bye!
+`
+
+var invalidCreatedBy = `panic: hello!
+
+goroutine 54 [running]:
+runtime.panic0x35ce40, 0xc208039db0)
+	/0/c/go/src/pkg/runtime/panic.c:279 +0xf5
+`
+
+var invalidCreatedByTwo = `panic: hello!
+
+goroutine 54 [running]:
+runtime.panic(0x35ce40, 0xc208039db0)
+/0/c/go/src/pkg/runtime/panic.c:279 +0xf5
+`
+
+var invalidCreatedByThree = `panic: hello!
+
+goroutine 54 [running]:
+runtime.panic(0x35ce40, 0xc208039db0)
+	/0/c/go/src/pkg/runtime/panic.c +0xf5
+`
+var invalidCreatedByFour = `panic: hello!
+
+goroutine 54 [running]:
+runtime.panic(0x35ce40, 0xc208039db0)
+	/0/c/go/src/pkg/runtime/panic.c:notanumber +0xf5
+`
+
+var invalidCreatedByFive = `panic: hello!
+
+goroutine 54 [notsupposedtobehere]:
+runtime.panic(0x35ce40, 0xc208039db0)
+	/0/c/go/src/pkg/runtime/panic.c:notanumber +0xf5
+`
+
+var invalidCreatedBySix = `panic: hello!
+
+goroutine 16 [IO wait]:
+net.runtime_pollWait(0x911c30, 0x72, 0x0)
+	/0/c/go/src/pkg/runtime/netpoll.goc:146 +0x66
+net.(*pollDesc).Wait(0xc2080ba990, 
+`
 
 var result = []StackFrame{
 	StackFrame{File: "/0/c/go/src/pkg/runtime/panic.c", LineNumber: 279, Name: "panic", Package: "runtime"},
@@ -137,6 +181,27 @@ func TestParsePanic(t *testing.T) {
 
 		if !reflect.DeepEqual(Err.StackFrames(), result) {
 			t.Errorf("Wrong stack for %s: %#v", key, Err.StackFrames())
+		}
+	}
+
+	invalidTodo := map[string]string{
+		"notPanic":              notPanic,
+		"invalidCreatedBy":      invalidCreatedBy,
+		"invalidCreatedByTwo":   invalidCreatedByTwo,
+		"invalidCreatedByThree": invalidCreatedByThree,
+		"invalidCreatedByFour":  invalidCreatedByFour,
+		"invalidCreatedByFive":  invalidCreatedByFive,
+		"invalidCreatedBySix":   invalidCreatedBySix,
+	}
+
+	for _, val := range invalidTodo {
+		Err, err := ParsePanic(val)
+
+		if err == nil {
+			t.Fatal(errErrorNotAppropriate)
+		}
+		if Err != nil {
+			t.Errorf("ParsePanic() should return nil, err when it receives an invalid panic")
 		}
 	}
 }
