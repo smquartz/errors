@@ -1,9 +1,9 @@
-go-errors/errors
+smquartz/errors
 ================
 
-[![Build Status](https://travis-ci.org/go-errors/errors.svg?branch=master)](https://travis-ci.org/go-errors/errors)
+[![Build Status](https://travis-ci.org/smquartz/errors.svg?branch=master)](https://travis-ci.org/smquartz/errors)
 
-Package errors adds stacktrace support to errors in go.
+Package errors adds stacktrace and arbitrary metadata support to errors in go.
 
 This is particularly useful when you want to understand the state of execution
 when an error was returned unexpectedly.
@@ -16,13 +16,13 @@ Usage
 -----
 
 Full documentation is available on
-[godoc](https://godoc.org/github.com/go-errors/errors), but here's a simple
+[godoc](https://godoc.org/github.com/smquartz/errors), but here's a simple
 example:
 
 ```go
 package crashy
 
-import "github.com/go-errors/errors"
+import "github.com/smquartz/errors"
 
 var Crashed = errors.Errorf("oh dear")
 
@@ -39,7 +39,7 @@ package main
 import (
     "crashy"
     "fmt"
-    "github.com/go-errors/errors"
+    "github.com/smquartz/errors"
 )
 
 func main() {
@@ -57,10 +57,8 @@ func main() {
 Meta-fu
 -------
 
-This package was original written to allow reporting to
-[Bugsnag](https://bugsnag.com/) from
-[bugsnag-go](https://github.com/bugsnag/bugsnag-go), but after I found similar
-packages by Facebook and Dropbox, it was moved to one canonical location so
-everyone can benefit.
+This package is a fork of [github.com/go-errors/errors](https://github.com/go-errors/errors) that modifies
+its behaviour slightly and adds a few features, including the ability
+to include arbitrary metadata in your errors.
 
 This package is licensed under the MIT license, see LICENSE.MIT for details.
