@@ -1,4 +1,4 @@
-// Package errors provides errors that have stack-traces.
+// Package errors provides errors that have stack-traces and arbitrary metadata.
 //
 // This is particularly useful when you want to understand the
 // state of execution when an error was returned unexpectedly.
@@ -7,50 +7,20 @@
 // golang error interface, so you can use this library interchangably
 // with code that is expecting a normal error return.
 //
-// For example:
 //
-//  package crashy
-//
-//  import "github.com/go-errors/errors"
-//
-//  var Crashed = errors.Errorf("oh dear")
-//
-//  func Crash() error {
-//      return errors.New(Crashed)
-//  }
-//
-// This can be called as follows:
-//
-//  package main
-//
-//  import (
-//      "crashy"
-//      "fmt"
-//      "github.com/go-errors/errors"
-//  )
-//
-//  func main() {
-//      err := crashy.Crash()
-//      if err != nil {
-//          if errors.Is(err, crashy.Crashed) {
-//              fmt.Println(err.(*errors.Error).ErrorStack())
-//          } else {
-//              panic(err)
-//          }
-//      }
-//  }
-//
-// This package was original written to allow reporting to Bugsnag,
-// but after I found similar packages by Facebook and Dropbox, it
-// was moved to one canonical location so everyone can benefit.
+// This package is a fork of github.com/go-errors/errors that modifies
+// its behaviour slightly and adds a few features, including the ability
+// to include arbitrary metadata in your errors.
 package errors
 
 import (
 	"bytes"
+	"fmt"
 	"reflect"
 )
 
-// The maximum number of stackframes on any error.
+// MaxStackDepth is the maximum number of stackframes permitted on any single
+// error.  This does not apply to the sum of all nested errors.
 var MaxStackDepth = 50
 
 // Error is an error with an attached stacktrace. It can be used
@@ -65,24 +35,21 @@ type Error struct {
 	Metadata Metadata
 }
 
-// Is detects whether the error is equal to a given error. Errors
-// are considered equal by this function if they are the same object,
-// or if they both contain the same error inside an errors.Error.
-func Is(e error, original error) bool {
+// Error returns the underlying error's message.
+func (err *Error) Error() string {
+	var msg string
 
-	if e == original {
-		return true
+	if err.Err != nil {
+		msg = err.Err.Error()
+	} else {
+		msg = fmt.Errorf("%v", err.Err).Error()
 	}
 
-	if e, ok := e.(*Error); ok {
-		return Is(e.Err, original)
+	if err.prefix != "" {
+		msg = fmt.Sprintf("%s: %s", err.prefix, msg)
 	}
 
-	if original, ok := original.(*Error); ok {
-		return Is(e, original.Err)
-	}
-
-	return false
+	return msg
 }
 
 // Stack returns the callstack formatted the same way that go does
