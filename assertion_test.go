@@ -86,7 +86,7 @@ func TestAssertUnderlying(t *testing.T) {
 
 	// test case: *Error with *Error underlying
 	underlying := parentError
-	parentError = func() error { return WrapPrefix(underlying, testPrefixFoobar, 1) }()
+	parentError = func() error { return Wrapf(underlying, testPrefixFoobar, 1) }()
 	u, err := AssertUnderlying(parentError)
 	if err != nil {
 		if Is(err, ErrNotError) {

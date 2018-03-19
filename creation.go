@@ -37,18 +37,6 @@ func Wrap(e interface{}, skip int) *Error {
 	}
 }
 
-// WrapPrefix makes an Error from the given value. If that value is already an
-// error then it will be used directly, if not, it will be passed to
-// fmt.Errorf("%v"). The prefix parameter is used to add a prefix to the
-// error message when calling Error(). The skip parameter indicates how far
-// up the stack to start the stacktrace. 0 is from the current call,
-// 1 from its caller, etc.
-func WrapPrefix(e interface{}, prefix string, skip int) *Error {
-	err := Wrap(e, 1+skip)
-	err.prefix = prefix
-	return err
-}
-
 // Wrapf makes an Error from the given value.  If that value is already
 // an error then it will be used directly as the underlying error, if not,
 // it will be passed to fmt.Errorf("%v").  The prefixf parameter is used to
@@ -56,7 +44,9 @@ func WrapPrefix(e interface{}, prefix string, skip int) *Error {
 // pameter indicates how far up the stack to start the stacktrace; 0 is from
 // the current call, 1 from its caller, etc.
 func Wrapf(e interface{}, prefixf string, skip int, a ...interface{}) *Error {
-	return WrapPrefix(e, fmt.Sprintf(prefixf, a...), skip+1)
+	err := Wrap(e, skip+1)
+	err.prefix = fmt.Sprintf(prefixf, a...)
+	return err
 }
 
 // Errorf creates a new error with the given message. You can use it

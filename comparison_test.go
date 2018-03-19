@@ -38,7 +38,7 @@ func TestIs(t *testing.T) {
 		t.Errorf(evaluatedIncorrectlyDifferent, "New(New(io.EOF))", "io.EOF")
 	}
 
-	if !Is(New(New(io.EOF)), WrapPrefix(WrapPrefix(io.EOF, testMsgFoo, 1), testPrefixFoobar, 1)) {
+	if !Is(New(New(io.EOF)), Wrapf(Wrapf(io.EOF, testMsgFoo, 1), testPrefixFoobar, 1)) {
 		t.Errorf(evaluatedIncorrectlyDifferent, "New(New(io.EOF))", "WrapPrefix(WrapPrefix(io.EOF, testMsgFoo, 1), testPrefixFoobar, 1)")
 	}
 
