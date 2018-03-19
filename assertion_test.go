@@ -21,8 +21,9 @@ const (
 
 // error format strings used in this file
 const (
-	assertFailed           = "Assert() failed; %v"
-	assertUnderlyingFailed = "AssertUnderlying() failed; %v"
+	assertFailed              = "Assert() failed; %v"
+	assertUnderlyingFailed    = "AssertUnderlying() failed; %v"
+	assertNthUnderlyingFailed = "AssertNthUnderlying() failed; %v"
 )
 
 func TestAssert(t *testing.T) {
@@ -101,4 +102,37 @@ func TestAssertUnderlying(t *testing.T) {
 		t.Errorf(assertUnderlyingFailed, errWrongUnderlyingError)
 	}
 
+}
+
+func TestAssertNthUnderlying(t *testing.T) {
+	// test case: nil error
+	// seeking nonexistent 2nd underlying error
+	var nilErr error
+	_, err := AssertNthUnderlying(nilErr, 2)
+	if err == nil {
+		t.Errorf(assertNthUnderlyingFailed, errNilAssertedWithUnderlying)
+	}
+
+	// test case: *Error with underlying *Error with underlying *Error with underlying
+	// plain error
+	// seeking 2nd underlying error
+	plain := fmt.Errorf(testMsgFoo)
+	wrap3 := Wrapf(plain, testPrefixFoobar, 1)
+	wrap2 := Wrapf(wrap3, testPrefixFoobar, 1)
+	wrap1 := Wrapf(wrap2, testPrefixFoobar, 1)
+	u, err := AssertNthUnderlying(wrap1, 2)
+	if err != nil {
+		t.Errorf(assertNthUnderlyingFailed, err)
+	}
+	if u != wrap3 {
+		t.Errorf(assertNthUnderlyingFailed, errWrongUnderlyingError)
+	}
+
+	// test case: *Error with underlying *Error with underlying *Error with underlying
+	// plain error
+	// seeking nonexistent 5th underlying error
+	_, err = AssertNthUnderlying(wrap1, 5)
+	if err == nil {
+		t.Errorf(assertNthUnderlyingFailed, errErrorWithPlainUnderlyingAssertedWithUnderlying)
+	}
 }

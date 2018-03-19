@@ -29,3 +29,20 @@ func AssertUnderlying(err error) (*Error, error) {
 	}
 	return u, nil
 }
+
+// AssertNthUnderlying is a convenience function that attempts to assert
+// an error to a *Error, and then attempts to recursively assert its
+// underlying errors to a *Error, up to the nth (specified) underlying error.
+func AssertNthUnderlying(err error, nth int) (u *Error, ierr error) {
+	u, ok := Assert(err)
+	if !ok {
+		return nil, New(ErrNotError)
+	}
+	for i := 0; i < nth; i++ {
+		u, ierr = AssertUnderlying(u)
+		if ierr != nil {
+			return nil, New(ErrUnderlyingNotError)
+		}
+	}
+	return u, nil
+}
