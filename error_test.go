@@ -11,7 +11,7 @@ import (
 
 // error strings used by this file
 const (
-	errCauseIncorrect = "returned root cause error is not correct"
+	errCauseIncorrect = "returned cause error is not correct"
 )
 
 func TestCallers(t *testing.T) {
@@ -38,28 +38,47 @@ func TestCause(t *testing.T) {
 
 	// test case: *Error with underlying *Error with underlying plain error
 	underlying2 := New(underlying)
-	if New(underlying2).Cause() != underlying {
+	if New(underlying2).Cause() != underlying2 {
+		t.Errorf(constructorErrorFailed, errCauseIncorrect)
+	}
+}
+
+func TestRootCause(t *testing.T) {
+	// test case: *Error with underlying nil error
+	if New(nil).RootCause() != nil {
+		t.Errorf(constructorNilFailed, errCauseIncorrect)
+	}
+
+	// test case: *Error with underlying plain error
+	underlying := fmt.Errorf(testMsgFoo)
+	if New(underlying).RootCause() != underlying {
+		t.Errorf(constructorPlainErrorFailed, errCauseIncorrect)
+	}
+
+	// test case: *Error with underlying *Error with underlying plain error
+	underlying2 := New(underlying)
+	if New(underlying2).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
 	}
 
 	// test case: *Error with underlying *Error with underlying *Error with
 	// underlying plain error
 	underlying3 := New(underlying2)
-	if New(underlying3).Cause() != underlying {
+	if New(underlying3).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
 	}
 
 	// test case *Error with underlying *Error with underlying *Error with
 	// underlying *Error with underlying plain error
 	underlying4 := New(underlying3)
-	if New(underlying4).Cause() != underlying {
+	if New(underlying4).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
 	}
 
 	// test case *Error with underlying *Error with underlying *Error with
 	// underlying *Error with underlying nil error
 	underlying = nil
-	if New(New(New(New(underlying)))).Cause() != underlying {
+	if New(New(New(New(underlying)))).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
 	}
 }
