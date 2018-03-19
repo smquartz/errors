@@ -2,6 +2,8 @@ smquartz/errors
 ================
 
 [![Build Status](https://travis-ci.org/smquartz/errors.svg?branch=master)](https://travis-ci.org/smquartz/errors)
+[![Godoc Reference](https://godoc.org/github.com/smquartz/errors?status.svg)](https://godoc.org/github.com/smquartz/errors)
+[![Coverage Status](https://coveralls.io/repos/github/smquartz/errors/badge.svg?branch=master)](https://coveralls.io/github/smquartz/errors?branch=master)
 
 Package errors adds stacktrace and arbitrary metadata support to errors in go.
 
