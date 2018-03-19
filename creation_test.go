@@ -247,6 +247,9 @@ func TestWrapPrefixError(t *testing.T) {
 	if !strings.HasSuffix(original.StackFrames()[0].File, "creation_test.go") || strings.HasSuffix(original.StackFrames()[1].File, "creation_test.go") {
 		t.Errorf(constructorStringFailed, errSkipFailed)
 	}
+	if !strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[0])).File, "creation_test.go") || strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[1])).File, "creation_test.go") {
+		t.Errorf(constructorStringFailed, errSkipFailed)
+	}
 }
 
 func TestWrapfError(t *testing.T) {
@@ -313,6 +316,9 @@ func TestWrapfError(t *testing.T) {
 
 	original := e.(*Error)
 	if !strings.HasSuffix(original.StackFrames()[0].File, "creation_test.go") || strings.HasSuffix(original.StackFrames()[1].File, "creation_test.go") {
+		t.Errorf(constructorStringFailed, errSkipFailed)
+	}
+	if !strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[0])).File, "creation_test.go") || strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[1])).File, "creation_test.go") {
 		t.Errorf(constructorStringFailed, errSkipFailed)
 	}
 }

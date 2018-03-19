@@ -17,6 +17,8 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+
+	"github.com/pkg/errors"
 )
 
 // MaxStackDepth is the maximum number of stackframes permitted on any single
@@ -88,6 +90,18 @@ func (err *Error) StackFrames() []StackFrame {
 	}
 
 	return err.frames
+}
+
+// StackTrace implements the pkg/errors.stacktracer interface.  It returns
+// an array of frames containing information about the stack.
+func (err *Error) StackTrace() errors.StackTrace {
+	st := make(errors.StackTrace, len(err.stack))
+
+	for i, pc := range err.stack {
+		st[i] = errors.Frame(pc)
+	}
+
+	return st
 }
 
 // TypeName returns the type this error. e.g. *errors.stringError.
