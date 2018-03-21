@@ -4,6 +4,8 @@ smquartz/errors
 [![Build Status](https://travis-ci.org/smquartz/errors.svg?branch=master)](https://travis-ci.org/smquartz/errors)
 [![Godoc Reference](https://godoc.org/github.com/smquartz/errors?status.svg)](https://godoc.org/github.com/smquartz/errors)
 [![Coverage Status](https://coveralls.io/repos/github/smquartz/errors/badge.svg?branch=master)](https://coveralls.io/github/smquartz/errors?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/smquartz/errors)](https://goreportcard.com/report/github.com/smquartz/errors)
+[![codebeat badge](https://codebeat.co/badges/b4e83d02-a632-4bb8-aa1d-4f3f079a319e)](https://codebeat.co/projects/github-com-smquartz-errors-master)
 
 Package errors adds stacktrace and arbitrary metadata support to errors in go.
 
