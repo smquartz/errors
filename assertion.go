@@ -46,3 +46,20 @@ func AssertNthUnderlying(err error, nth int) (u *Error, ierr error) {
 	}
 	return u, nil
 }
+
+// AssertDeepestUnderlying is a convenience function that attempts to return
+// the deepest underlying *Error in a stack of errors.
+func AssertDeepestUnderlying(err error) (u *Error, ierr error) {
+	u, ok := Assert(err)
+	if !ok {
+		return nil, New(ErrNotError)
+	}
+	var u2 *Error
+	for ierr == nil {
+		u2, ierr = AssertUnderlying(u)
+		if u2 != nil {
+			u = u2
+		}
+	}
+	return u, nil
+}

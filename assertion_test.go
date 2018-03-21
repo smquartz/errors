@@ -21,9 +21,10 @@ const (
 
 // error format strings used in this file
 const (
-	assertFailed              = "Assert() failed; %v"
-	assertUnderlyingFailed    = "AssertUnderlying() failed; %v"
-	assertNthUnderlyingFailed = "AssertNthUnderlying() failed; %v"
+	assertFailed                  = "Assert() failed; %v"
+	assertUnderlyingFailed        = "AssertUnderlying() failed; %v"
+	assertNthUnderlyingFailed     = "AssertNthUnderlying() failed; %v"
+	assertDeepestUnderlyingFailed = "AssertDeepestUnderlying() failed; %v"
 )
 
 func TestAssert(t *testing.T) {
@@ -134,5 +135,30 @@ func TestAssertNthUnderlying(t *testing.T) {
 	_, err = AssertNthUnderlying(wrap1, 5)
 	if err == nil {
 		t.Errorf(assertNthUnderlyingFailed, errErrorWithPlainUnderlyingAssertedWithUnderlying)
+	}
+}
+
+func TestAssertDeepestUnderlying(t *testing.T) {
+	// test case: nil error
+	// seeking nonexistent deepest underlying *Error
+	var nilErr error
+	_, err := AssertDeepestUnderlying(nilErr)
+	if err == nil {
+		t.Errorf(assertDeepestUnderlyingFailed, errNilAssertedWithUnderlying)
+	}
+
+	// test case: *Error with underlying *Error with underlying *Error with underlying
+	// plain error
+	// seeking deepest underlying error
+	plain := fmt.Errorf(testMsgFoo)
+	wrap3 := Wrapf(plain, testPrefixFoobar, 1)
+	wrap2 := Wrapf(wrap3, testPrefixFoobar, 1)
+	wrap1 := Wrapf(wrap2, testPrefixFoobar, 1)
+	u, err := AssertDeepestUnderlying(wrap1)
+	if err != nil {
+		t.Errorf(assertDeepestUnderlyingFailed, err)
+	}
+	if u != wrap3 {
+		t.Errorf(assertDeepestUnderlyingFailed, errWrongUnderlyingError)
 	}
 }
