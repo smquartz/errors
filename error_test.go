@@ -11,8 +11,36 @@ import (
 
 // error strings used by this file
 const (
-	errCauseIncorrect = "returned cause error is not correct"
+	errCauseIncorrect             = "returned cause error is not correct"
+	errNotContainStack            = "does not contain appropriate stack"
+	errNotContainType             = "does not contain appropriate error type"
+	errIgnoreNestedStackIncorrect = "the value of the ignoreNestedStack field is incorrect"
 )
+
+// error format strings used by this file
+const (
+	parentErrorStackFailed     = ".ParentErrorStack() failed; %v"
+	setIgnoreNestedStackFailed = ".SetIgnoreNestedStack() failed; %v"
+)
+
+func TestSetIgnoreNestedStack(t *testing.T) {
+	e := New(testMsgFoo)
+	e2 := New(testMsgFoo)
+	e2.ignoreNestedStack = true
+
+	if e.SetIgnoreNestedStack(true).ignoreNestedStack != true {
+		t.Errorf(setIgnoreNestedStackFailed, errIgnoreNestedStackIncorrect)
+	}
+	if e.SetIgnoreNestedStack(true).ignoreNestedStack != true {
+		t.Errorf(setIgnoreNestedStackFailed, errIgnoreNestedStackIncorrect)
+	}
+	if e2.SetIgnoreNestedStack(false).ignoreNestedStack != false {
+		t.Errorf(setIgnoreNestedStackFailed, errIgnoreNestedStackIncorrect)
+	}
+	if e2.SetIgnoreNestedStack(false).ignoreNestedStack != false {
+		t.Errorf(setIgnoreNestedStackFailed, errIgnoreNestedStackIncorrect)
+	}
+}
 
 func TestCallers(t *testing.T) {
 	// error to test with
@@ -20,6 +48,24 @@ func TestCallers(t *testing.T) {
 
 	// let's check that .Callers returns the correct thing
 	if !reflect.DeepEqual(err.stack, err.Callers()) {
+		t.Errorf(constructorStringFailed, errStacksNotMatch)
+	}
+
+	// error to test with
+	// is nested and has ignoreNestedStack set
+	err = New(New(testMsgFoo)).SetIgnoreNestedStack(true)
+
+	// let's check that .Callers returns the correct thing
+	if !reflect.DeepEqual(err.stack, err.Callers()) {
+		t.Errorf(constructorStringFailed, errStacksNotMatch)
+	}
+
+	// error to test with
+	// is nested and does not have ignoreNestedStack
+	err = New(New(testMsgFoo))
+
+	// let's check that .Callers returns the correct thing
+	if !reflect.DeepEqual(err.Err.(*Error).stack, err.Callers()) {
 		t.Errorf(constructorStringFailed, errStacksNotMatch)
 	}
 }
@@ -80,6 +126,22 @@ func TestRootCause(t *testing.T) {
 	underlying = nil
 	if New(New(New(New(underlying)))).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
+	}
+}
+
+func TestParentErrorStack(t *testing.T) {
+	// test error to use; Error constructor
+	e := New(New(New(testMsgFoo)))
+	// ErrorStack of e itself
+	s := e.ParentErrorStack()
+	if !strings.HasPrefix(s, e.TypeName()) {
+		t.Errorf(parentErrorStackFailed, errNotContainType)
+	}
+	if !strings.Contains(s, e.Error()) {
+		t.Errorf(parentErrorStackFailed, errWrongErrorMessage)
+	}
+	if !strings.Contains(s, string(e.ParentStack())) {
+		t.Errorf(parentErrorStackFailed, errNotContainStack)
 	}
 }
 

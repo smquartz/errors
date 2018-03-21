@@ -116,6 +116,10 @@ func TestNew(t *testing.T) {
 	if err.ErrorStack() != err.TypeName()+" "+err.Error()+"\n"+string(err.Stack()) {
 		t.Errorf(constructorErrorFailed, errErrStackWrongFormat)
 	}
+	// check .ErrorStack() returns the correct format if ignoreNestedStack is true
+	if err.SetIgnoreNestedStack(true).ErrorStack() != err.TypeName()+" "+err.Error()+"\n"+string(err.ParentStack()) {
+		t.Errorf(constructorErrorFailed, errErrStackWrongFormat)
+	}
 }
 
 func TestWrapError(t *testing.T) {
@@ -177,6 +181,10 @@ func TestWrapError(t *testing.T) {
 	}
 	// check .ErrorStack() retruns the correct format
 	if err.ErrorStack() != err.TypeName()+" "+err.Error()+"\n"+string(err.Stack()) {
+		t.Errorf(constructorErrorFailed, errErrStackWrongFormat)
+	}
+	// check .ErrorStack() returns the correct format if ignoreNestedStack is true
+	if err.SetIgnoreNestedStack(true).ErrorStack() != err.TypeName()+" "+err.Error()+"\n"+string(err.ParentStack()) {
 		t.Errorf(constructorErrorFailed, errErrStackWrongFormat)
 	}
 }
@@ -242,11 +250,23 @@ func TestWrapfError(t *testing.T) {
 	if err.ErrorStack() != err.TypeName()+" "+err.Error()+"\n"+string(err.Stack()) {
 		t.Errorf(constructorErrorFailed, errErrStackWrongFormat)
 	}
+	// check .ErrorStack() returns the correct format if ignoreNestedStack is true
+	if err.SetIgnoreNestedStack(true).ErrorStack() != err.TypeName()+" "+err.Error()+"\n"+string(err.ParentStack()) {
+		t.Errorf(constructorErrorFailed, errErrStackWrongFormat)
+	}
 
 	original := e.(*Error)
 	if !strings.HasSuffix(original.StackFrames()[0].File, "creation_test.go") || strings.HasSuffix(original.StackFrames()[1].File, "creation_test.go") {
 		t.Errorf(constructorStringFailed, errSkipFailed)
 	}
+	original.SetIgnoreNestedStack(true)
+	if !strings.HasSuffix(original.StackFrames()[0].File, "creation_test.go") || strings.HasSuffix(original.StackFrames()[1].File, "creation_test.go") {
+		t.Errorf(constructorStringFailed, errSkipFailed)
+	}
+	if !strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[0])).File, "creation_test.go") || strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[1])).File, "creation_test.go") {
+		t.Errorf(constructorStringFailed, errSkipFailed)
+	}
+	original.SetIgnoreNestedStack(false)
 	if !strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[0])).File, "creation_test.go") || strings.HasSuffix(NewStackFrame(uintptr(original.StackTrace()[1])).File, "creation_test.go") {
 		t.Errorf(constructorStringFailed, errSkipFailed)
 	}
