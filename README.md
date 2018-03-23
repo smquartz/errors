@@ -7,13 +7,13 @@ smquartz/errors
 [![Go Report Card](https://goreportcard.com/badge/github.com/smquartz/errors)](https://goreportcard.com/report/github.com/smquartz/errors)
 [![codebeat badge](https://codebeat.co/badges/b4e83d02-a632-4bb8-aa1d-4f3f079a319e)](https://codebeat.co/projects/github-com-smquartz-errors-master)
 
-Package errors adds stacktrace and arbitrary metadata support to errors in go.
+Package errors adds stacktrace to errors in go.
 
 This is particularly useful when you want to understand the state of execution
 when an error was returned unexpectedly.
 
 It provides the type \*Err which implements the standard golang error
-interface, so you can use this library interchangably with code that is
+interface, so you can use this library interchangeably with code that is
 expecting a normal error return.
 
 Usage
@@ -62,7 +62,6 @@ Meta-fu
 -------
 
 This package is a fork of [github.com/go-errors/errors](https://github.com/go-errors/errors) that modifies
-its behaviour slightly and adds a few features, including the ability
-to include arbitrary metadata in your errors.
+its behaviour and adds compliance with [github.com/pkg/errors](https://github.com/pkg/errors).
 
 This package is licensed under the MIT license, see LICENSE.MIT for details.
