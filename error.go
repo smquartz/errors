@@ -4,7 +4,7 @@
 // state of execution when an error was returned unexpectedly.
 //
 // It provides the type *Err which implements the standard
-// golang error interface, so you can use this library interchangably
+// golang error interface, so you can use this library intercheangeably
 // with code that is expecting a normal error return.
 //
 //

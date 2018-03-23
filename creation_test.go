@@ -15,7 +15,7 @@ const (
 	errWrongErrorMessage    = "produces error with the wrong error message"
 	errErrStackWrongFormat  = ".ErrorStack() is in the wrong format"
 	errWrongUnderlyingError = "produces error with the wrong underlying error"
-	errNotMatchWrap         = "the error returned does not match the equivelant returned by Wrap()"
+	errNotMatchWrap         = "the error returned does not match the equivalent returned by Wrap()"
 	errSkipFailed           = "failed to successfully skip parts of the stack"
 )
 
