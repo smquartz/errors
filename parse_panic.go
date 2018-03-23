@@ -16,22 +16,21 @@ func (p uncaughtPanic) Error() string {
 func ParsePanic(text string) (*Err, error) {
 	lines := strings.Split(text, "\n")
 
-	state := "start"
+	state := "seek"
 
 	var message string
 	var stack []StackFrame
+
+	if strings.HasPrefix(lines[0], "panic: ") {
+		message = strings.TrimPrefix(lines[0], "panic: ")
+	} else {
+		return nil, Errorf("bugsnag.panicParser: Invalid line (no prefix): %s", lines[0])
+	}
 
 	for i := 0; i < len(lines); i++ {
 		line := lines[i]
 
 		switch state {
-		case "start":
-			if strings.HasPrefix(line, "panic: ") {
-				message = strings.TrimPrefix(line, "panic: ")
-				state = "seek"
-			} else {
-				return nil, Errorf("bugsnag.panicParser: Invalid line (no prefix): %s", line)
-			}
 		case "seek":
 			if strings.HasPrefix(line, "goroutine ") && strings.HasSuffix(line, "[running]:") {
 				state = "parsing"
