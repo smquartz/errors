@@ -23,7 +23,7 @@ func AssertUnderlying(err error) (*Error, error) {
 	if !ok {
 		return nil, New(ErrNotError)
 	}
-	u, ok := Assert(e.Err)
+	u, ok := Assert(e.Underlying)
 	if !ok {
 		return nil, New(ErrUnderlyingNotError)
 	}

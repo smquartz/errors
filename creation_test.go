@@ -68,7 +68,7 @@ func TestNew(t *testing.T) {
 		t.Errorf(constructorStringFailed, errWrongErrorMessage)
 	}
 	// test the underlying error is a plain one as returned by fmt.Errorf()
-	if !reflect.DeepEqual(e.(*Error).Err, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(e.(*Error).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorStringFailed, errWrongUnderlyingError)
 	}
 
@@ -79,14 +79,14 @@ func TestNew(t *testing.T) {
 		t.Errorf(constructorPlainErrorFailed, errWrongErrorMessage)
 	}
 	// test that the underlying error is as it was set
-	if !reflect.DeepEqual(New(fmt.Errorf(testMsgFoo)).Err, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(New(fmt.Errorf(testMsgFoo)).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorPlainErrorFailed, errWrongUnderlyingError)
 	}
 
 	// test using a *Error constructor
 	err := New(e)
 	// test that the underlying error is as it was set
-	if !reflect.DeepEqual(err.Err, e) {
+	if !reflect.DeepEqual(err.Underlying, e) {
 		t.Errorf(constructorErrorFailed, errWrongUnderlyingError)
 	}
 	// test that the error message is correct
@@ -101,7 +101,7 @@ func TestNew(t *testing.T) {
 		t.Errorf(constructorNilFailed, errWrongErrorMessage)
 	}
 	// test that the underlying error is as it was set
-	if New(nil).Err != nil {
+	if New(nil).Underlying != nil {
 		t.Errorf(constructorNilFailed, errWrongUnderlyingError)
 	}
 
@@ -135,7 +135,7 @@ func TestWrapError(t *testing.T) {
 		t.Errorf(constructorStringFailed, errWrongErrorMessage)
 	}
 	// test the underlying error is a plain one as returned by fmt.Errorf()
-	if !reflect.DeepEqual(e.(*Error).Err, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(e.(*Error).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorStringFailed, errWrongUnderlyingError)
 	}
 
@@ -146,14 +146,14 @@ func TestWrapError(t *testing.T) {
 		t.Errorf(constructorPlainErrorFailed, errWrongErrorMessage)
 	}
 	// test that the underlying error is as it was set
-	if !reflect.DeepEqual(Wrap(fmt.Errorf(testMsgFoo), 0).Err, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(Wrap(fmt.Errorf(testMsgFoo), 0).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorPlainErrorFailed, errWrongUnderlyingError)
 	}
 
 	// test using a *Error constructor
 	err := Wrap(e, 0)
 	// test that the underlying error is as it was set
-	if !reflect.DeepEqual(err.Err, e) {
+	if !reflect.DeepEqual(err.Underlying, e) {
 		t.Errorf(constructorErrorFailed, errWrongUnderlyingError)
 	}
 	// test that the error message is correct
@@ -168,7 +168,7 @@ func TestWrapError(t *testing.T) {
 		t.Errorf(constructorNilFailed, errWrongErrorMessage)
 	}
 	// test that the underlying error is as it was set
-	if Wrap(nil, 0).Err != nil {
+	if Wrap(nil, 0).Underlying != nil {
 		t.Errorf(constructorNilFailed, errWrongUnderlyingError)
 	}
 
@@ -202,7 +202,7 @@ func TestWrapfError(t *testing.T) {
 		t.Errorf(constructorStringFailed, errWrongErrorMessage)
 	}
 	// test the underlying error is a plain one as returned by fmt.Errorf()
-	if !reflect.DeepEqual(e.(*Error).Err, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(e.(*Error).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorStringFailed, errWrongUnderlyingError)
 	}
 
@@ -213,7 +213,7 @@ func TestWrapfError(t *testing.T) {
 		t.Errorf(constructorPlainErrorFailed, errWrongErrorMessage)
 	}
 	// test that the underlying error is as it was set
-	if !reflect.DeepEqual(err.Err, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(err.Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorPlainErrorFailed, errWrongUnderlyingError)
 	}
 
@@ -224,14 +224,14 @@ func TestWrapfError(t *testing.T) {
 		t.Errorf(constructorNilFailed, errWrongErrorMessage)
 	}
 	// test that the underlying error is as it was set
-	if err.Err != nil {
+	if err.Underlying != nil {
 		t.Errorf(constructorNilFailed, errWrongUnderlyingError)
 	}
 
 	// test using a *Error constructor
 	err = Wrapf(e, testFormatPrefixFoobar, 0, testFormatArgumentBaz)
 	// test that the underlying error is as it was set
-	if !reflect.DeepEqual(err.Err, e) {
+	if !reflect.DeepEqual(err.Underlying, e) {
 		t.Errorf(constructorErrorFailed, errWrongUnderlyingError)
 	}
 	// test that the error message is correct

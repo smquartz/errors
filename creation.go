@@ -32,8 +32,8 @@ func Wrap(e interface{}, skip int) *Error {
 	stack := make([]uintptr, MaxStackDepth)
 	length := runtime.Callers(2+skip, stack[:])
 	return &Error{
-		Err:   err,
-		stack: stack[:length],
+		Underlying: err,
+		stack:      stack[:length],
 	}
 }
 

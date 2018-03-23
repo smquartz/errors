@@ -26,11 +26,11 @@ import (
 var MaxStackDepth = 50
 
 // Error is an error with an attached stacktrace. It can be used
-// wherever the builtin error interface is expected.
+// wherever	 the builtin error interface is expected.
 type Error struct {
 	// underlying or "cause" error
-	Err   error
-	stack []uintptr
+	Underlying error
+	stack      []uintptr
 	// cache of parsed stack
 	frames []StackFrame
 	// a prefix to prepend to the error message of the underlying error
@@ -55,10 +55,10 @@ func (err *Error) SetIgnoreNestedStack(val bool) *Error {
 func (err *Error) Error() string {
 	var msg string
 
-	if err.Err != nil {
-		msg = err.Err.Error()
+	if err.Underlying != nil {
+		msg = err.Underlying.Error()
 	} else {
-		msg = fmt.Errorf("%v", err.Err).Error()
+		msg = fmt.Errorf("%v", err.Underlying).Error()
 	}
 
 	if err.prefix != "" {
@@ -197,16 +197,16 @@ func (err *Error) StackTrace() errors.StackTrace {
 
 // TypeName returns the type this error. e.g. *errors.stringError.
 func (err *Error) TypeName() string {
-	if _, ok := err.Err.(uncaughtPanic); ok {
+	if _, ok := err.Underlying.(uncaughtPanic); ok {
 		return "panic"
 	}
-	return reflect.TypeOf(err.Err).String()
+	return reflect.TypeOf(err.Underlying).String()
 }
 
 // Cause returns the underlying cause of an error.  It returns the immediate
 // cause of an error, not the "root" cause, which may be nested further.
 func (err *Error) Cause() error {
-	return err.Err
+	return err.Underlying
 }
 
 // RootCause returns the root underlying cause of an error.  It returns the

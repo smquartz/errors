@@ -65,7 +65,7 @@ func TestCallers(t *testing.T) {
 	err = New(New(testMsgFoo))
 
 	// let's check that .Callers returns the correct thing
-	if !reflect.DeepEqual(err.Err.(*Error).stack, err.Callers()) {
+	if !reflect.DeepEqual(err.Underlying.(*Error).stack, err.Callers()) {
 		t.Errorf(constructorStringFailed, errStacksNotMatch)
 	}
 }
