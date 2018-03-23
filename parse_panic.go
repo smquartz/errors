@@ -24,20 +24,19 @@ func ParsePanic(text string) (*Err, error) {
 	for i := 0; i < len(lines); i++ {
 		line := lines[i]
 
-		if state == "start" {
+		switch state {
+		case "start":
 			if strings.HasPrefix(line, "panic: ") {
 				message = strings.TrimPrefix(line, "panic: ")
 				state = "seek"
 			} else {
 				return nil, Errorf("bugsnag.panicParser: Invalid line (no prefix): %s", line)
 			}
-
-		} else if state == "seek" {
+		case "seek":
 			if strings.HasPrefix(line, "goroutine ") && strings.HasSuffix(line, "[running]:") {
 				state = "parsing"
 			}
-
-		} else if state == "parsing" {
+		case "parsing":
 			if line == "" {
 				state = "done"
 				break
