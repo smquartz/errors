@@ -8,15 +8,15 @@ import (
 
 // error strings used is this file
 const (
-	errNilAsserted                                    = "nil was successfully asserted to *Error"
-	errPlainErrorAsserted                             = "a plain error was successfully asserted to *Error"
-	errErrorNotAsserted                               = "a *Error failed to be asserted to a *Error"
-	errAssertedErrorNotMatch                          = "a *Error was asserted to a *Error that did not match the actual *Error"
-	errNilAssertedWithUnderlying                      = errNilAsserted + " with an underlying *Error"
+	errNilAsserted                                    = "nil was successfully asserted to *Err"
+	errPlainErrorAsserted                             = "a plain error was successfully asserted to *Err"
+	errErrorNotAsserted                               = "a *Err failed to be asserted to a *Err"
+	errAssertedErrorNotMatch                          = "a *Err was asserted to a *Err that did not match the actual *Err"
+	errNilAssertedWithUnderlying                      = errNilAsserted + " with an underlying *Err"
 	errErrorNotAppropriate                            = "error returned was not appropriate given the conditions"
-	errPlainErrorAssertedWithUnderlying               = errPlainErrorAsserted + " with an underlying *Error"
-	errErrorWithPlainUnderlyingAssertedWithUnderlying = "a *Error with a plain underlying error was asserted as a *Error with an underlying *Error"
-	errUnderlyingErrorNotAsserted                     = "a *Error's underlying *Error failed to be asserted to a *Error"
+	errPlainErrorAssertedWithUnderlying               = errPlainErrorAsserted + " with an underlying *Err"
+	errErrorWithPlainUnderlyingAssertedWithUnderlying = "a *Err with a plain underlying error was asserted as a *Err with an underlying *Err"
+	errUnderlyingErrorNotAsserted                     = "a *Err's underlying *Err failed to be asserted to a *Err"
 )
 
 // error format strings used in this file
@@ -44,7 +44,7 @@ func TestAssert(t *testing.T) {
 		t.Errorf(assertFailed, errPlainErrorAsserted)
 	}
 
-	// test case: *Error
+	// test case: *Err
 	actual := New(testMsgFoo)
 	err = func() error { return actual }()
 	e, ok := Assert(err)
@@ -77,7 +77,7 @@ func TestAssertUnderlying(t *testing.T) {
 		t.Errorf(assertUnderlyingFailed, errErrorNotAppropriate)
 	}
 
-	// test case: *Error with plain underlying
+	// test case: *Err with plain underlying
 	parentError = func() error { return New(fmt.Errorf(testMsgFoo)) }()
 	_, err = AssertUnderlying(parentError)
 	if err == nil {
@@ -86,7 +86,7 @@ func TestAssertUnderlying(t *testing.T) {
 		t.Errorf(assertUnderlyingFailed, errErrorNotAppropriate)
 	}
 
-	// test case: *Error with *Error underlying
+	// test case: *Err with *Err underlying
 	underlying := parentError
 	parentError = func() error { return Wrapf(underlying, testPrefixFoobar, 1) }()
 	u, err := AssertUnderlying(parentError)
@@ -114,7 +114,7 @@ func TestAssertNthUnderlying(t *testing.T) {
 		t.Errorf(assertNthUnderlyingFailed, errNilAssertedWithUnderlying)
 	}
 
-	// test case: *Error with underlying *Error with underlying *Error with underlying
+	// test case: *Err with underlying *Err with underlying *Err with underlying
 	// plain error
 	// seeking 2nd underlying error
 	plain := fmt.Errorf(testMsgFoo)
@@ -129,7 +129,7 @@ func TestAssertNthUnderlying(t *testing.T) {
 		t.Errorf(assertNthUnderlyingFailed, errWrongUnderlyingError)
 	}
 
-	// test case: *Error with underlying *Error with underlying *Error with underlying
+	// test case: *Err with underlying *Err with underlying *Err with underlying
 	// plain error
 	// seeking nonexistent 5th underlying error
 	_, err = AssertNthUnderlying(wrap1, 5)
@@ -140,14 +140,14 @@ func TestAssertNthUnderlying(t *testing.T) {
 
 func TestAssertDeepestUnderlying(t *testing.T) {
 	// test case: nil error
-	// seeking nonexistent deepest underlying *Error
+	// seeking nonexistent deepest underlying *Err
 	var nilErr error
 	_, err := AssertDeepestUnderlying(nilErr)
 	if err == nil {
 		t.Errorf(assertDeepestUnderlyingFailed, errNilAssertedWithUnderlying)
 	}
 
-	// test case: *Error with underlying *Error with underlying *Error with underlying
+	// test case: *Err with underlying *Err with underlying *Err with underlying
 	// plain error
 	// seeking deepest underlying error
 	plain := fmt.Errorf(testMsgFoo)

@@ -3,7 +3,7 @@ package errors
 import "fmt"
 
 func ExampleAssert() {
-	// mock function that returns a error that is actually a *Error
+	// mock function that returns a error that is actually a *Err
 	err := func() error { return New("some error") }()
 	// try assert it
 	e, ok := Assert(err)
@@ -16,9 +16,9 @@ func ExampleAssert() {
 }
 
 func ExampleAssertUnderlying() {
-	// mock function that returns an error that is actually a *Error
+	// mock function that returns an error that is actually a *Err
 	crashy := func() error { return New("some error") }
-	// mock function that returns an error that is actually a *Error
+	// mock function that returns an error that is actually a *Err
 	// this one relies upon and wraps errors of crashy
 	biggerCrashy := func() error {
 		err := crashy()

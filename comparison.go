@@ -9,11 +9,11 @@ func Is(e error, original error) bool {
 		return true
 	}
 
-	if e, ok := e.(*Error); ok {
+	if e, ok := e.(*Err); ok {
 		return Is(e.Underlying, original)
 	}
 
-	if original, ok := original.(*Error); ok {
+	if original, ok := original.(*Err); ok {
 		return Is(e, original.Underlying)
 	}
 

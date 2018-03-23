@@ -65,24 +65,24 @@ func TestCallers(t *testing.T) {
 	err = New(New(testMsgFoo))
 
 	// let's check that .Callers returns the correct thing
-	if !reflect.DeepEqual(err.Underlying.(*Error).stack, err.Callers()) {
+	if !reflect.DeepEqual(err.Underlying.(*Err).stack, err.Callers()) {
 		t.Errorf(constructorStringFailed, errStacksNotMatch)
 	}
 }
 
 func TestCause(t *testing.T) {
-	// test case: *Error with underlying nil error
+	// test case: *Err with underlying nil error
 	if New(nil).Cause() != nil {
 		t.Errorf(constructorNilFailed, errCauseIncorrect)
 	}
 
-	// test case: *Error with underlying plain error
+	// test case: *Err with underlying plain error
 	underlying := fmt.Errorf(testMsgFoo)
 	if New(underlying).Cause() != underlying {
 		t.Errorf(constructorPlainErrorFailed, errCauseIncorrect)
 	}
 
-	// test case: *Error with underlying *Error with underlying plain error
+	// test case: *Err with underlying *Err with underlying plain error
 	underlying2 := New(underlying)
 	if New(underlying2).Cause() != underlying2 {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
@@ -90,39 +90,39 @@ func TestCause(t *testing.T) {
 }
 
 func TestRootCause(t *testing.T) {
-	// test case: *Error with underlying nil error
+	// test case: *Err with underlying nil error
 	if New(nil).RootCause() != nil {
 		t.Errorf(constructorNilFailed, errCauseIncorrect)
 	}
 
-	// test case: *Error with underlying plain error
+	// test case: *Err with underlying plain error
 	underlying := fmt.Errorf(testMsgFoo)
 	if New(underlying).RootCause() != underlying {
 		t.Errorf(constructorPlainErrorFailed, errCauseIncorrect)
 	}
 
-	// test case: *Error with underlying *Error with underlying plain error
+	// test case: *Err with underlying *Err with underlying plain error
 	underlying2 := New(underlying)
 	if New(underlying2).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
 	}
 
-	// test case: *Error with underlying *Error with underlying *Error with
+	// test case: *Err with underlying *Err with underlying *Err with
 	// underlying plain error
 	underlying3 := New(underlying2)
 	if New(underlying3).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
 	}
 
-	// test case *Error with underlying *Error with underlying *Error with
-	// underlying *Error with underlying plain error
+	// test case *Err with underlying *Err with underlying *Err with
+	// underlying *Err with underlying plain error
 	underlying4 := New(underlying3)
 	if New(underlying4).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)
 	}
 
-	// test case *Error with underlying *Error with underlying *Error with
-	// underlying *Error with underlying nil error
+	// test case *Err with underlying *Err with underlying *Err with
+	// underlying *Err with underlying nil error
 	underlying = nil
 	if New(New(New(New(underlying)))).RootCause() != underlying {
 		t.Errorf(constructorErrorFailed, errCauseIncorrect)

@@ -13,7 +13,7 @@ type Metadata interface {
 
 // SetMeta sets the metadata on the called-upon error, as well as returning a
 // pointer to that same error, to allow it to easily be chained inline.
-func (e *Error) SetMeta(meta Metadata) *Error {
+func (e *Err) SetMeta(meta Metadata) *Err {
 	e.Metadata = meta
 	return e
 }

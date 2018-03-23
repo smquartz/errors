@@ -12,7 +12,7 @@ Package errors adds stacktrace and arbitrary metadata support to errors in go.
 This is particularly useful when you want to understand the state of execution
 when an error was returned unexpectedly.
 
-It provides the type \*Error which implements the standard golang error
+It provides the type \*Err which implements the standard golang error
 interface, so you can use this library interchangably with code that is
 expecting a normal error return.
 

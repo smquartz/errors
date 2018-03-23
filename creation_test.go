@@ -24,7 +24,7 @@ const (
 var (
 	constructorStringFailed     = "constructor with a string failed; %v"
 	constructorPlainErrorFailed = "constructor with a plain error failed; %v"
-	constructorErrorFailed      = "constructor with a *Error failed; %v"
+	constructorErrorFailed      = "constructor with a *Err failed; %v"
 	constructorNilFailed        = "constructor with nil failed; %v"
 )
 
@@ -56,7 +56,7 @@ func TestSkipWorks(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	// *Error type returned as error, used in this test
+	// *Err type returned as error, used in this test
 	e := func() error {
 		return New(testMsgFoo)
 	}()
@@ -68,7 +68,7 @@ func TestNew(t *testing.T) {
 		t.Errorf(constructorStringFailed, errWrongErrorMessage)
 	}
 	// test the underlying error is a plain one as returned by fmt.Errorf()
-	if !reflect.DeepEqual(e.(*Error).Underlying, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(e.(*Err).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorStringFailed, errWrongUnderlyingError)
 	}
 
@@ -83,7 +83,7 @@ func TestNew(t *testing.T) {
 		t.Errorf(constructorPlainErrorFailed, errWrongUnderlyingError)
 	}
 
-	// test using a *Error constructor
+	// test using a *Err constructor
 	err := New(e)
 	// test that the underlying error is as it was set
 	if !reflect.DeepEqual(err.Underlying, e) {
@@ -123,7 +123,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestWrapError(t *testing.T) {
-	// *Error type returned as error, used in this test
+	// *Err type returned as error, used in this test
 	e := func() error {
 		return Wrap(testMsgFoo, 1)
 	}()
@@ -135,7 +135,7 @@ func TestWrapError(t *testing.T) {
 		t.Errorf(constructorStringFailed, errWrongErrorMessage)
 	}
 	// test the underlying error is a plain one as returned by fmt.Errorf()
-	if !reflect.DeepEqual(e.(*Error).Underlying, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(e.(*Err).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorStringFailed, errWrongUnderlyingError)
 	}
 
@@ -150,7 +150,7 @@ func TestWrapError(t *testing.T) {
 		t.Errorf(constructorPlainErrorFailed, errWrongUnderlyingError)
 	}
 
-	// test using a *Error constructor
+	// test using a *Err constructor
 	err := Wrap(e, 0)
 	// test that the underlying error is as it was set
 	if !reflect.DeepEqual(err.Underlying, e) {
@@ -190,7 +190,7 @@ func TestWrapError(t *testing.T) {
 }
 
 func TestWrapfError(t *testing.T) {
-	// *Error type returned as error, used in this test
+	// *Err type returned as error, used in this test
 	e := func() error {
 		return Wrapf(testMsgFoo, testFormatPrefixFoobar, 1, testFormatArgumentBaz)
 	}()
@@ -202,7 +202,7 @@ func TestWrapfError(t *testing.T) {
 		t.Errorf(constructorStringFailed, errWrongErrorMessage)
 	}
 	// test the underlying error is a plain one as returned by fmt.Errorf()
-	if !reflect.DeepEqual(e.(*Error).Underlying, fmt.Errorf(testMsgFoo)) {
+	if !reflect.DeepEqual(e.(*Err).Underlying, fmt.Errorf(testMsgFoo)) {
 		t.Errorf(constructorStringFailed, errWrongUnderlyingError)
 	}
 
@@ -228,7 +228,7 @@ func TestWrapfError(t *testing.T) {
 		t.Errorf(constructorNilFailed, errWrongUnderlyingError)
 	}
 
-	// test using a *Error constructor
+	// test using a *Err constructor
 	err = Wrapf(e, testFormatPrefixFoobar, 0, testFormatArgumentBaz)
 	// test that the underlying error is as it was set
 	if !reflect.DeepEqual(err.Underlying, e) {
@@ -255,7 +255,7 @@ func TestWrapfError(t *testing.T) {
 		t.Errorf(constructorErrorFailed, errErrStackWrongFormat)
 	}
 
-	original := e.(*Error)
+	original := e.(*Err)
 	if !strings.HasSuffix(original.StackFrames()[0].File, "creation_test.go") || strings.HasSuffix(original.StackFrames()[1].File, "creation_test.go") {
 		t.Errorf(constructorStringFailed, errSkipFailed)
 	}

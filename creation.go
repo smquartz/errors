@@ -9,7 +9,7 @@ import (
 // error then it will be used directly, if not, it will be passed to
 // fmt.Errorf("%v"). The stacktrace will point to the line of code that
 // called New.
-func New(e interface{}) *Error {
+func New(e interface{}) *Err {
 	return Wrap(e, 1)
 }
 
@@ -17,7 +17,7 @@ func New(e interface{}) *Error {
 // error then it will be used directly, if not, it will be passed to
 // fmt.Errorf("%v"). The skip parameter indicates how far up the stack
 // to start the stacktrace. 0 is from the current call, 1 from its caller, etc.
-func Wrap(e interface{}, skip int) *Error {
+func Wrap(e interface{}, skip int) *Err {
 	var err error
 
 	switch e := e.(type) {
@@ -31,7 +31,7 @@ func Wrap(e interface{}, skip int) *Error {
 
 	stack := make([]uintptr, MaxStackDepth)
 	length := runtime.Callers(2+skip, stack[:])
-	return &Error{
+	return &Err{
 		Underlying: err,
 		stack:      stack[:length],
 	}
@@ -43,7 +43,7 @@ func Wrap(e interface{}, skip int) *Error {
 // add a formatted prefix to the error message when calling Error().  The skip
 // pameter indicates how far up the stack to start the stacktrace; 0 is from
 // the current call, 1 from its caller, etc.
-func Wrapf(e interface{}, prefixf string, skip int, a ...interface{}) *Error {
+func Wrapf(e interface{}, prefixf string, skip int, a ...interface{}) *Err {
 	err := Wrap(e, skip+1)
 	err.prefix = fmt.Sprintf(prefixf, a...)
 	return err
@@ -52,6 +52,6 @@ func Wrapf(e interface{}, prefixf string, skip int, a ...interface{}) *Error {
 // Errorf creates a new error with the given message. You can use it
 // as a drop-in replacement for fmt.Errorf() to provide descriptive
 // errors in return values.
-func Errorf(format string, a ...interface{}) *Error {
+func Errorf(format string, a ...interface{}) *Err {
 	return Wrap(fmt.Errorf(format, a...), 1)
 }
