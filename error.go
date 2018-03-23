@@ -1,4 +1,4 @@
-// Package errors provides errors that have stack-traces and arbitrary metadata.
+// Package errors provides errors that have stack-traces.
 //
 // This is particularly useful when you want to understand the
 // state of execution when an error was returned unexpectedly.
@@ -9,8 +9,7 @@
 //
 //
 // This package is a fork of github.com/go-errors/errors that modifies
-// its behaviour slightly and adds a few features, including the ability
-// to include arbitrary metadata in your errors.
+// its behaviour and adds a few features.
 package errors
 
 import (
@@ -30,7 +29,8 @@ var MaxStackDepth = 50
 type Err struct {
 	// underlying or "cause" error
 	Underlying error
-	stack      []uintptr
+	// program counters
+	stack []uintptr
 	// cache of parsed stack
 	frames []StackFrame
 	// a prefix to prepend to the error message of the underlying error
@@ -38,8 +38,6 @@ type Err struct {
 	// whether to return the deepest nested stacktrace (false) or the shallowest
 	// (this instance's) stacktrace
 	ignoreNestedStack bool
-	// arbitrary metadata that may be included in the error
-	Metadata Metadata
 }
 
 // SetIgnoreNestedStack sets the ignoreNestedSTack field on the *Err this
