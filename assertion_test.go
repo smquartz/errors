@@ -64,7 +64,7 @@ func TestAssertUnderlying(t *testing.T) {
 	_, err := AssertUnderlying(parentError)
 	if err == nil {
 		t.Errorf(assertUnderlyingFailed, errNilAssertedWithUnderlying)
-	} else if !Is(err, ErrNotError) {
+	} else if _, ok := err.(*ErrNotErr); !ok {
 		t.Errorf(assertUnderlyingFailed, errErrorNotAppropriate)
 	}
 
@@ -73,7 +73,7 @@ func TestAssertUnderlying(t *testing.T) {
 	_, err = AssertUnderlying(parentError)
 	if err == nil {
 		t.Errorf(assertUnderlyingFailed, errPlainErrorAssertedWithUnderlying)
-	} else if !Is(err, ErrNotError) {
+	} else if _, ok := err.(*ErrNotErr); !ok {
 		t.Errorf(assertUnderlyingFailed, errErrorNotAppropriate)
 	}
 
@@ -82,7 +82,7 @@ func TestAssertUnderlying(t *testing.T) {
 	_, err = AssertUnderlying(parentError)
 	if err == nil {
 		t.Errorf(assertUnderlyingFailed, errErrorWithPlainUnderlyingAssertedWithUnderlying)
-	} else if !Is(err, ErrUnderlyingNotError) {
+	} else if _, ok := err.(*ErrUnderlyingNotErr); !ok {
 		t.Errorf(assertUnderlyingFailed, errErrorNotAppropriate)
 	}
 
@@ -91,9 +91,9 @@ func TestAssertUnderlying(t *testing.T) {
 	parentError = func() error { return Wrapf(underlying, testPrefixFoobar, 1) }()
 	u, err := AssertUnderlying(parentError)
 	if err != nil {
-		if Is(err, ErrNotError) {
+		if _, ok := err.(*ErrNotErr); ok {
 			t.Errorf(assertUnderlyingFailed, errErrorNotAsserted)
-		} else if Is(err, ErrUnderlyingNotError) {
+		} else if _, ok := err.(*ErrUnderlyingNotErr); ok {
 			t.Errorf(assertUnderlyingFailed, errUnderlyingErrorNotAsserted)
 		} else {
 			t.Errorf(assertUnderlyingFailed, errErrorNotAppropriate)

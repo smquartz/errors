@@ -1,10 +1,26 @@
 package errors
 
-// errors used in this file
-var (
-	ErrNotError           = Errorf("the provided error is not of type *Err")
-	ErrUnderlyingNotError = Errorf("the provided error's underlying error is not of type *Err")
-)
+// ErrNotErr is used when a parent error is passed to an Assert* function that
+// is not of type *Err
+type ErrNotErr struct {
+	*Err
+}
+
+// newErrNotErr returns a new initialised instance of ErrNotErr
+func newErrNotErr() *ErrNotErr {
+	return &ErrNotErr{Err: Errorf("the provided error is not of type *Err")}
+}
+
+// ErrUnderlyingNotErr is used when a parent error is passed to an Assert*
+// function that contains an underlying error that is not of type *Err
+type ErrUnderlyingNotErr struct {
+	*Err
+}
+
+// newErrUnderlyingNotErr returns a new initialised instance of ErrUnderlyingNotErr
+func newUnderlyingNotErr() *ErrUnderlyingNotErr {
+	return &ErrUnderlyingNotErr{Err: Errorf("the provided error is not of type *Err")}
+}
 
 // Assert is a convenience function that attempts to assert a error to a *Err.
 func Assert(err error) (*Err, bool) {
@@ -21,11 +37,11 @@ func Assert(err error) (*Err, bool) {
 func AssertUnderlying(err error) (*Err, error) {
 	e, ok := Assert(err)
 	if !ok {
-		return nil, New(ErrNotError)
+		return nil, newErrNotErr()
 	}
 	u, ok := Assert(e.Underlying)
 	if !ok {
-		return nil, New(ErrUnderlyingNotError)
+		return nil, newUnderlyingNotErr()
 	}
 	return u, nil
 }
@@ -36,12 +52,12 @@ func AssertUnderlying(err error) (*Err, error) {
 func AssertNthUnderlying(err error, nth int) (u *Err, ierr error) {
 	u, ok := Assert(err)
 	if !ok {
-		return nil, New(ErrNotError)
+		return nil, newErrNotErr()
 	}
 	for i := 0; i < nth; i++ {
 		u, ierr = AssertUnderlying(u)
 		if ierr != nil {
-			return nil, New(ErrUnderlyingNotError)
+			return nil, newUnderlyingNotErr()
 		}
 	}
 	return u, nil
@@ -52,7 +68,7 @@ func AssertNthUnderlying(err error, nth int) (u *Err, ierr error) {
 func AssertDeepestUnderlying(err error) (u *Err, ierr error) {
 	u, ok := Assert(err)
 	if !ok {
-		return nil, New(ErrNotError)
+		return nil, newErrNotErr()
 	}
 	var u2 *Err
 	for ierr == nil {
